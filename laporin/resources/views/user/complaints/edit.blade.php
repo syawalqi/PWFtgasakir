@@ -27,9 +27,10 @@
                         <textarea name="description" rows="5" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required>{{ old('description', $complaint->description) }}</textarea>
                         @error('description') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                     </div>
-                    <div class="mb-4">
+                    <div class="mb-4" x-data="{ preview: null }">
                         <label class="block text-sm font-medium text-gray-700">Gambar (biarkan kosong jika tidak diubah)</label>
-                        <input type="file" name="image" accept="image/jpeg,image/png" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                        <input type="file" name="image" accept="image/jpeg,image/png" @change="preview = URL.createObjectURL($event.target.files[0])" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                        <img x-show="preview" :src="preview" class="mt-2 max-w-xs rounded-lg shadow">
                         @error('image') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div class="flex justify-end gap-2">
