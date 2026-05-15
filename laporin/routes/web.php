@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ComplaintController as AdminComplaintController;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\ResponseController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\User\ComplaintController;
 use App\Http\Controllers\User\DashboardController;
@@ -22,6 +26,14 @@ Route::middleware('auth')->group(function () {
     Route::prefix('user')->name('user.')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::resource('complaints', ComplaintController::class);
+    });
+
+    Route::prefix('admin')->name('admin.')->group(function () {
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+        Route::resource('complaints', AdminComplaintController::class)->only(['index', 'show']);
+        Route::patch('complaints/{complaint}/status', [AdminComplaintController::class, 'updateStatus'])->name('complaints.status');
+        Route::resource('categories', CategoryController::class);
+        Route::post('complaints/{complaint}/responses', [ResponseController::class, 'store'])->name('responses.store');
     });
 });
 
