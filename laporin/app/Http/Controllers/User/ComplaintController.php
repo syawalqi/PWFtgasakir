@@ -42,28 +42,21 @@ class ComplaintController extends Controller
 
     public function show(Complaint $complaint)
     {
-        if ($complaint->user_id !== auth()->id()) {
-            abort(403);
-        }
+        $this->authorize('view', $complaint);
         $complaint->load('category', 'responses.user');
         return view('user.complaints.show', compact('complaint'));
     }
 
     public function edit(Complaint $complaint)
     {
-        if ($complaint->user_id !== auth()->id() || !$complaint->isPending()) {
-            abort(403);
-        }
+        $this->authorize('update', $complaint);
         $categories = ComplaintCategory::all();
         return view('user.complaints.edit', compact('complaint', 'categories'));
     }
 
     public function update(UpdateComplaintRequest $request, Complaint $complaint)
     {
-        if ($complaint->user_id !== auth()->id() || !$complaint->isPending()) {
-            abort(403);
-        }
-
+        $this->authorize('update', $complaint);
         $data = $request->validated();
 
         if ($request->hasFile('image')) {
@@ -79,9 +72,7 @@ class ComplaintController extends Controller
 
     public function destroy(Complaint $complaint)
     {
-        if ($complaint->user_id !== auth()->id() || !$complaint->isPending()) {
-            abort(403);
-        }
+        $this->authorize('delete', $complaint);
 
         if ($complaint->image) {
             Storage::disk('public')->delete($complaint->image);

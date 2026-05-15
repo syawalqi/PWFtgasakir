@@ -23,12 +23,12 @@ Route::middleware('auth')->group(function () {
         return redirect()->route('user.dashboard');
     })->name('dashboard');
 
-    Route::prefix('user')->name('user.')->group(function () {
+    Route::prefix('user')->middleware('role:user')->name('user.')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::resource('complaints', ComplaintController::class);
     });
 
-    Route::prefix('admin')->name('admin.')->group(function () {
+    Route::prefix('admin')->middleware('role:admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
         Route::resource('complaints', AdminComplaintController::class)->only(['index', 'show']);
         Route::patch('complaints/{complaint}/status', [AdminComplaintController::class, 'updateStatus'])->name('complaints.status');
