@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Models\ComplaintCategory;
+use Illuminate\Support\Facades\Cache;
 
 class CategoryController extends Controller
 {
@@ -22,6 +23,7 @@ class CategoryController extends Controller
     public function store(StoreCategoryRequest $request)
     {
         ComplaintCategory::create($request->validated());
+        Cache::forget('complaint_categories');
         return redirect()->route('admin.categories.index')->with('success', 'Kategori berhasil ditambahkan.');
     }
 
@@ -33,12 +35,14 @@ class CategoryController extends Controller
     public function update(StoreCategoryRequest $request, ComplaintCategory $category)
     {
         $category->update($request->validated());
+        Cache::forget('complaint_categories');
         return redirect()->route('admin.categories.index')->with('success', 'Kategori berhasil diperbarui.');
     }
 
     public function destroy(ComplaintCategory $category)
     {
         $category->delete();
+        Cache::forget('complaint_categories');
         return redirect()->route('admin.categories.index')->with('success', 'Kategori berhasil dihapus.');
     }
 }

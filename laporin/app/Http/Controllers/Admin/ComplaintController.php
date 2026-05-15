@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Complaint;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class ComplaintController extends Controller
 {
@@ -42,6 +43,7 @@ class ComplaintController extends Controller
         ]);
 
         $complaint->update(['status' => $request->status]);
+        Cache::forget('admin_stats');
 
         return redirect()->route('admin.complaints.show', $complaint)
             ->with('success', 'Status aduan berhasil diperbarui.');
