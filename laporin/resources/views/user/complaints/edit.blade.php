@@ -1,44 +1,131 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ __('Edit Aduan') }}</h2>
-    </x-slot>
+<div class="user-page">
 
-    <div class="py-12">
-        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+    <!-- Breadcrumb -->
+    <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:1.75rem;font-size:.85rem;color:#64748b">
+        <a href="{{ route('user.complaints.index') }}" style="color:#818cf8;text-decoration:none">Aduan Saya</a>
+        <i class="fa-solid fa-chevron-right" style="font-size:.65rem"></i>
+        <span>Edit Aduan</span>
+    </div>
+
+    <div style="max-width:720px">
+        <div style="margin-bottom:1.75rem">
+            <h1 style="font-size:1.5rem;font-weight:800;color:#f1f5f9">Edit Aduan</h1>
+            <p style="color:#64748b;font-size:.875rem;margin-top:.25rem">Perbarui informasi aduan Anda</p>
+        </div>
+
+        <div class="card animate-fadein">
+            <div class="card-body">
                 <form method="POST" action="{{ route('user.complaints.update', $complaint) }}" enctype="multipart/form-data">
                     @csrf @method('PUT')
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700">Judul</label>
-                        <input type="text" name="title" value="{{ old('title', $complaint->title) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
-                        @error('title') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+
+                    <!-- Judul -->
+                    <div class="form-group">
+                        <label class="form-label" for="title">
+                            <i class="fa-solid fa-heading" style="margin-right:.35rem"></i>Judul Aduan <span style="color:#f87171">*</span>
+                        </label>
+                        <input
+                            type="text"
+                            id="title"
+                            name="title"
+                            value="{{ old('title', $complaint->title) }}"
+                            class="form-input"
+                            required
+                            maxlength="255"
+                        >
+                        @error('title')
+                            <p class="form-error"><i class="fa-solid fa-circle-exclamation"></i> {{ $message }}</p>
+                        @enderror
                     </div>
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700">Kategori</label>
-                        <select name="category_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
+
+                    <!-- Kategori -->
+                    <div class="form-group">
+                        <label class="form-label" for="category_id">
+                            <i class="fa-solid fa-tag" style="margin-right:.35rem"></i>Kategori <span style="color:#f87171">*</span>
+                        </label>
+                        <select name="category_id" id="category_id" class="form-select" required>
                             @foreach ($categories as $cat)
-                                <option value="{{ $cat->id }}" {{ (old('category_id', $complaint->category_id) == $cat->id) ? 'selected' : '' }}>{{ $cat->name }}</option>
+                                <option value="{{ $cat->id }}" {{ (old('category_id', $complaint->category_id) == $cat->id) ? 'selected' : '' }}>
+                                    {{ $cat->name }}
+                                </option>
                             @endforeach
                         </select>
-                        @error('category_id') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                        @error('category_id')
+                            <p class="form-error"><i class="fa-solid fa-circle-exclamation"></i> {{ $message }}</p>
+                        @enderror
                     </div>
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700">Deskripsi</label>
-                        <textarea name="description" rows="5" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required>{{ old('description', $complaint->description) }}</textarea>
-                        @error('description') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+
+                    <hr class="section-divider">
+
+                    <!-- Deskripsi -->
+                    <div class="form-group">
+                        <label class="form-label" for="description">
+                            <i class="fa-solid fa-align-left" style="margin-right:.35rem"></i>Deskripsi Lengkap <span style="color:#f87171">*</span>
+                        </label>
+                        <textarea
+                            id="description"
+                            name="description"
+                            rows="6"
+                            class="form-textarea"
+                            required
+                        >{{ old('description', $complaint->description) }}</textarea>
+                        @error('description')
+                            <p class="form-error"><i class="fa-solid fa-circle-exclamation"></i> {{ $message }}</p>
+                        @enderror
                     </div>
-                    <div class="mb-4" x-data="{ preview: null }">
-                        <label class="block text-sm font-medium text-gray-700">Gambar (biarkan kosong jika tidak diubah)</label>
-                        <input type="file" name="image" accept="image/jpeg,image/png" @change="preview = URL.createObjectURL($event.target.files[0])" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-                        <img x-show="preview" :src="preview" class="mt-2 max-w-xs rounded-lg shadow">
-                        @error('image') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+
+                    <hr class="section-divider">
+
+                    <!-- Image -->
+                    <div class="form-group" x-data="{ preview: null }">
+                        <label class="form-label">
+                            <i class="fa-solid fa-image" style="margin-right:.35rem"></i>Foto Bukti
+                        </label>
+
+                        @if ($complaint->image)
+                            <div style="margin-bottom:1rem">
+                                <p style="font-size:.8rem;color:#64748b;margin-bottom:.5rem">Foto saat ini:</p>
+                                <img src="{{ asset('storage/' . $complaint->image) }}" style="max-height:160px;border-radius:10px;border:1px solid var(--border)">
+                            </div>
+                        @endif
+
+                        <div class="file-input-wrapper" @click="$refs.fileInput2.click()">
+                            <div x-show="!preview">
+                                <i class="fa-solid fa-cloud-arrow-up" style="font-size:1.75rem;color:#6366f1;margin-bottom:.5rem"></i>
+                                <p style="color:#94a3b8;font-size:.875rem">{{ $complaint->image ? 'Klik untuk ganti foto' : 'Klik untuk pilih foto' }}</p>
+                                <p style="font-size:.75rem;color:#64748b">JPG, PNG – Maks. 2MB</p>
+                            </div>
+                            <div x-show="preview">
+                                <img :src="preview" style="max-height:160px;border-radius:8px;margin:0 auto;display:block">
+                            </div>
+                        </div>
+
+                        <input
+                            x-ref="fileInput2"
+                            type="file"
+                            name="image"
+                            accept="image/jpeg,image/png"
+                            style="display:none"
+                            @change="if ($event.target.files[0]) preview = URL.createObjectURL($event.target.files[0])"
+                        >
+
+                        @error('image')
+                            <p class="form-error"><i class="fa-solid fa-circle-exclamation"></i> {{ $message }}</p>
+                        @enderror
                     </div>
-                    <div class="flex justify-end gap-2">
-                        <a href="{{ route('user.complaints.index') }}" class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">Batal</a>
-                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Simpan</button>
+
+                    <!-- Actions -->
+                    <div style="display:flex;justify-content:flex-end;gap:.75rem;padding-top:1rem;border-top:1px solid var(--border)">
+                        <a href="{{ route('user.complaints.index') }}" class="btn btn-ghost">
+                            <i class="fa-solid fa-xmark"></i> Batal
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+</div>
 </x-app-layout>

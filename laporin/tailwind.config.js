@@ -12,10 +12,31 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['Inter', 'Figtree', ...defaultTheme.fontFamily.sans],
+            },
+            colors: {
+                primary: {
+                    DEFAULT: '#6366f1',
+                    dark: '#4f46e5',
+                    light: '#818cf8',
+                },
+                surface: {
+                    DEFAULT: '#1e1e2e',
+                    2: '#2a2a3e',
+                    3: '#313147',
+                },
+            },
+            animation: {
+                'fade-in': 'fadeInUp 0.5s ease both',
+                'slide-in': 'slideInRight 0.3s cubic-bezier(.4,0,.2,1)',
+                'float': 'float 4s ease-in-out infinite',
             },
         },
     },
 
-    plugins: [forms],
+    plugins: [
+        forms({
+            strategy: 'base',
+        }),
+    ],
 };
