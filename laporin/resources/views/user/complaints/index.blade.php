@@ -34,7 +34,7 @@
     @if ($complaints->count() > 0)
         <div style="display:flex;flex-direction:column;gap:1rem">
             @foreach ($complaints as $complaint)
-            <div class="complaint-card animate-fadein" onclick="window.location='{{ route('user.complaints.show', $complaint) }}'" style="cursor:pointer">
+            <div class="complaint-card animate-fadein" data-url="{{ route('user.complaints.show', $complaint) }}" onclick="window.location.href=this.dataset.url;" style="cursor:pointer">
                 <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap">
                     <div style="flex:1;min-width:0">
                         <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem">
@@ -50,7 +50,7 @@
                         <h3 style="font-size:1rem;font-weight:700;color:#f1f5f9;margin-bottom:.3rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
                             {{ $complaint->title }}
                         </h3>
-                        <p style="font-size:.8rem;color:#64748b;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">
+                        <p style="font-size:.8rem;color:#64748b;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical">
                             {{ $complaint->description }}
                         </p>
                     </div>

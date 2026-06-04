@@ -111,13 +111,18 @@
                     <p style="font-size:.8rem;color:#64748b">aduan berhasil diselesaikan</p>
                 </div>
                 <div style="display:flex;flex-direction:column;gap:.75rem">
+                    @php
+                        $wPending = $total > 0 ? round($pending/$total*100) : 0;
+                        $wDiproses = $total > 0 ? round($diproses/$total*100) : 0;
+                        $wSelesai = $total > 0 ? round($selesai/$total*100) : 0;
+                    @endphp
                     <div>
                         <div style="display:flex;justify-content:space-between;margin-bottom:.35rem">
                             <span style="font-size:.75rem;color:#fbbf24;font-weight:600">Pending</span>
                             <span style="font-size:.75rem;color:#94a3b8">{{ $pending }}</span>
                         </div>
                         <div class="progress-bar">
-                            <div class="progress-fill" {!! 'style="width:' . ($total > 0 ? round($pending/$total*100) : 0) . '%;background:linear-gradient(90deg,#f59e0b,#fbbf24)"' !!}></div>
+                            <div class="progress-fill" @style(["width: {$wPending}%", "background: linear-gradient(90deg,#f59e0b,#fbbf24)"])></div>
                         </div>
                     </div>
                     <div>
@@ -126,7 +131,7 @@
                             <span style="font-size:.75rem;color:#94a3b8">{{ $diproses }}</span>
                         </div>
                         <div class="progress-bar">
-                            <div class="progress-fill" {!! 'style="width:' . ($total > 0 ? round($diproses/$total*100) : 0) . '%"' !!}></div>
+                            <div class="progress-fill" @style(["width: {$wDiproses}%"])></div>
                         </div>
                     </div>
                     <div>
@@ -135,7 +140,7 @@
                             <span style="font-size:.75rem;color:#94a3b8">{{ $selesai }}</span>
                         </div>
                         <div class="progress-bar">
-                            <div class="progress-fill" {!! 'style="width:' . ($total > 0 ? round($selesai/$total*100) : 0) . '%;background:linear-gradient(90deg,#10b981,#34d399)"' !!}></div>
+                            <div class="progress-fill" @style(["width: {$wSelesai}%", "background: linear-gradient(90deg,#10b981,#34d399)"])></div>
                         </div>
                     </div>
                 </div>

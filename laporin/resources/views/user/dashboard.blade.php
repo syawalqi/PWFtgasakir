@@ -60,31 +60,36 @@
         </div>
         <div class="card-body">
             <div style="display:flex;flex-direction:column;gap:.875rem">
+                @php
+                    $wPending = $total > 0 ? round($pending/$total*100) : 0;
+                    $wDiproses = $total > 0 ? round($diproses/$total*100) : 0;
+                    $wSelesai = $total > 0 ? round($selesai/$total*100) : 0;
+                @endphp
                 <div>
                     <div style="display:flex;justify-content:space-between;margin-bottom:.35rem">
                         <span style="font-size:.8rem;color:#fbbf24;font-weight:600"><i class="fa-solid fa-clock" style="margin-right:.3rem"></i>Pending</span>
-                        <span style="font-size:.8rem;color:#94a3b8">{{ $total > 0 ? round($pending/$total*100) : 0 }}%</span>
+                        <span style="font-size:.8rem;color:#94a3b8">{{ $wPending }}%</span>
                     </div>
                     <div class="progress-bar">
-                        <div class="progress-fill" {!! 'style="width:' . ($total > 0 ? round($pending/$total*100) : 0) . '%;background:linear-gradient(90deg,#f59e0b,#fbbf24)"' !!}></div>
+                        <div class="progress-fill" @style(["width: {$wPending}%", "background: linear-gradient(90deg,#f59e0b,#fbbf24)"])></div>
                     </div>
                 </div>
                 <div>
                     <div style="display:flex;justify-content:space-between;margin-bottom:.35rem">
                         <span style="font-size:.8rem;color:#a5b4fc;font-weight:600"><i class="fa-solid fa-gears" style="margin-right:.3rem"></i>Diproses</span>
-                        <span style="font-size:.8rem;color:#94a3b8">{{ $total > 0 ? round($diproses/$total*100) : 0 }}%</span>
+                        <span style="font-size:.8rem;color:#94a3b8">{{ $wDiproses }}%</span>
                     </div>
                     <div class="progress-bar">
-                        <div class="progress-fill" {!! 'style="width:' . ($total > 0 ? round($diproses/$total*100) : 0) . '%"' !!}></div>
+                        <div class="progress-fill" @style(["width: {$wDiproses}%"])></div>
                     </div>
                 </div>
                 <div>
                     <div style="display:flex;justify-content:space-between;margin-bottom:.35rem">
                         <span style="font-size:.8rem;color:#34d399;font-weight:600"><i class="fa-solid fa-circle-check" style="margin-right:.3rem"></i>Selesai</span>
-                        <span style="font-size:.8rem;color:#94a3b8">{{ $total > 0 ? round($selesai/$total*100) : 0 }}%</span>
+                        <span style="font-size:.8rem;color:#94a3b8">{{ $wSelesai }}%</span>
                     </div>
                     <div class="progress-bar">
-                        <div class="progress-fill" {!! 'style="width:' . ($total > 0 ? round($selesai/$total*100) : 0) . '%;background:linear-gradient(90deg,#10b981,#34d399)"' !!}></div>
+                        <div class="progress-fill" @style(["width: {$wSelesai}%", "background: linear-gradient(90deg,#10b981,#34d399)"])></div>
                     </div>
                 </div>
             </div>
