@@ -1,10 +1,47 @@
 <x-admin-layout>
-    <h1 class="text-2xl font-bold mb-6">Edit Kategori</h1>
-    <div class="bg-white rounded-lg shadow p-6 max-w-lg">
-        <form method="POST" action="{{ route('admin.categories.update', $category) }}">
-            @csrf @method('PUT')
-            <div class="mb-4"><label class="block text-sm font-medium text-gray-700">Nama Kategori</label><input type="text" name="name" value="{{ old('name', $category->name) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required>@error('name')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror</div>
-            <div class="flex gap-2"><button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Simpan</button><a href="{{ route('admin.categories.index') }}" class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">Batal</a></div>
-        </form>
+
+<div style="max-width:520px">
+    <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:1.75rem;font-size:.85rem;color:#64748b">
+        <a href="{{ route('admin.categories.index') }}" style="color:#818cf8;text-decoration:none">Kategori</a>
+        <i class="fa-solid fa-chevron-right" style="font-size:.65rem"></i>
+        <span>Edit Kategori</span>
     </div>
+
+    <h1 style="font-size:1.5rem;font-weight:800;color:#f1f5f9;margin-bottom:1.75rem">Edit Kategori</h1>
+
+    <div class="card animate-fadein">
+        <div class="card-body">
+            <form method="POST" action="{{ route('admin.categories.update', $category) }}">
+                @csrf @method('PUT')
+                <div class="form-group">
+                    <label class="form-label" for="name">
+                        <i class="fa-solid fa-tag" style="margin-right:.35rem"></i>Nama Kategori <span style="color:#f87171">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value="{{ old('name', $category->name) }}"
+                        class="form-input"
+                        required
+                        autofocus
+                    >
+                    @error('name')
+                        <p class="form-error"><i class="fa-solid fa-circle-exclamation"></i> {{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div style="display:flex;gap:.75rem;padding-top:1rem;border-top:1px solid var(--border)">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan
+                    </button>
+                    <a href="{{ route('admin.categories.index') }}" class="btn btn-ghost">
+                        <i class="fa-solid fa-xmark"></i> Batal
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 </x-admin-layout>
