@@ -18,7 +18,12 @@ class ComplaintController extends Controller
         }
 
         if ($request->filled('search')) {
-            $query->where('title', 'like', '%' . $request->search . '%');
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', '%' . $search . '%')
+                  ->orWhere('description', 'like', '%' . $search . '%')
+                  ->orWhereHas('user', fn($u) => $u->where('name', 'like', '%' . $search . '%'));
+            });
         }
 
         if ($request->filled('category_id')) {

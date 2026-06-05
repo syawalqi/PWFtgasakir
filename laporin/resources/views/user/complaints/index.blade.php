@@ -14,8 +14,8 @@
     </div>
 
     <!-- Filter Tabs -->
-    <div x-data="{ tab: '{{ request('tab', 'all') }}' }" style="margin-bottom:1.75rem">
-        <div class="tabs" style="max-width:400px">
+    <div x-data="{ tab: '{{ $tab }}' }" style="margin-bottom:1.75rem">
+        <div class="tabs" style="max-width:450px">
             <button @click="tab='all';window.location='{{ route('user.complaints.index') }}'" :class="tab==='all' ? 'active' : ''" class="tab-btn">
                 Semua
             </button>
@@ -92,11 +92,19 @@
         <div class="card">
             <div class="card-body" style="text-align:center;padding:4rem">
                 <div class="empty-icon">📭</div>
-                <h3 style="font-size:1.1rem;font-weight:700;color:#e2e8f0;margin-bottom:.5rem">Belum Ada Aduan</h3>
-                <p style="color:#94a3b8;font-size:.875rem;margin-bottom:1.5rem">Anda belum memiliki aduan. Buat aduan pertama Anda sekarang!</p>
-                <a href="{{ route('user.complaints.create') }}" class="btn btn-primary">
-                    <i class="fa-solid fa-plus"></i> Buat Aduan Sekarang
-                </a>
+                @if($tab === 'all')
+                    <h3 style="font-size:1.1rem;font-weight:700;color:#e2e8f0;margin-bottom:.5rem">Belum Ada Aduan</h3>
+                    <p style="color:#94a3b8;font-size:.875rem;margin-bottom:1.5rem">Anda belum memiliki aduan. Buat aduan pertama Anda sekarang!</p>
+                    <a href="{{ route('user.complaints.create') }}" class="btn btn-primary">
+                        <i class="fa-solid fa-plus"></i> Buat Aduan Sekarang
+                    </a>
+                @else
+                    <h3 style="font-size:1.1rem;font-weight:700;color:#e2e8f0;margin-bottom:.5rem">Tidak Ada Aduan "{{ ucfirst($tab) }}"</h3>
+                    <p style="color:#94a3b8;font-size:.875rem;margin-bottom:1.5rem">Tidak ada aduan dengan status ini saat ini.</p>
+                    <a href="{{ route('user.complaints.index') }}" class="btn btn-ghost">
+                        <i class="fa-solid fa-rotate-left"></i> Lihat Semua Aduan
+                    </a>
+                @endif
             </div>
         </div>
     @endif

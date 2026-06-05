@@ -11,13 +11,20 @@ use Illuminate\Support\Facades\Storage;
 
 class ComplaintController extends Controller
 {
-    public function index()
+    public function index(\Illuminate\Http\Request $request)
     {
-        $complaints = Complaint::with('category')
-            ->where('user_id', auth()->id())
-            ->latest()
-            ->paginate(10);
-        return view('user.complaints.index', compact('complaints'));
+        $query = Complaint::with(['category', 'responses'])
+            ->where('user_id', auth()->id());
+
+        // Filter by status via ?tab= (from Activity Diagram: user can filter by status)
+        $tab = $request->input('tab', 'all');
+        if (in_array($tab, ['pending', 'diproses', 'selesai'])) {
+            $query->where('status', $tab);
+        }
+
+        $complaints = $query->latest()->paginate(10)->withQueryString();
+
+        return view('user.complaints.index', compact('complaints', 'tab'));
     }
 
     public function create()
