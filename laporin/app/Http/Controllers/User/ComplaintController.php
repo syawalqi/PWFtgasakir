@@ -7,6 +7,7 @@ use App\Http\Requests\StoreComplaintRequest;
 use App\Http\Requests\UpdateComplaintRequest;
 use App\Models\Complaint;
 use App\Models\ComplaintCategory;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class ComplaintController extends Controller
@@ -14,7 +15,7 @@ class ComplaintController extends Controller
     public function index(\Illuminate\Http\Request $request)
     {
         $query = Complaint::with(['category', 'responses'])
-            ->where('user_id', auth()->id());
+            ->where('user_id', Auth::id());
 
         // Filter by status via ?tab= (from Activity Diagram: user can filter by status)
         $tab = $request->input('tab', 'all');
@@ -36,7 +37,7 @@ class ComplaintController extends Controller
     public function store(StoreComplaintRequest $request)
     {
         $data = $request->validated();
-        $data['user_id'] = auth()->id();
+        $data['user_id'] = Auth::id();
         $data['status'] = 'pending';
 
         if ($request->hasFile('image')) {
