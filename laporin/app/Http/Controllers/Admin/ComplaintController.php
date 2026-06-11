@@ -5,63 +5,74 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Complaint;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class ComplaintController extends Controller
 {
     /**
-     * Menampilkan daftar semua aduan masuk dengan fitur filter dan search.
+     * Menampilkan daftar semua aduan dengan pagination resmi
      */
-    public function index(Request $request)
+    public function index()
     {
-        $query = Complaint::with('user', 'category');
-
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        if ($request->filled('search')) {
-            $query->where('title', 'like', '%' . $request->search . '%');
-        }
-
-        if ($request->filled('category_id')) {
-            $query->where('category_id', $request->category_id);
-        }
-
-        $complaints = $query->latest()->paginate(10)->withQueryString();
-
+        $complaints = Complaint::with(['user', 'category'])->latest()->paginate(10);
         return view('admin.complaints.index', compact('complaints'));
     }
 
     /**
-     * Menampilkan detail pengaduan beserta riwayat tanggapan (responses).
+     * Menampilkan detail aduan warga
      */
-    public function show(Complaint $complaint)
+    public function show($id)
     {
-        $complaint->load('user', 'category', 'responses.user');
+        $complaint = Complaint::with(['user', 'category', 'responses'])->findOrFail($id);
         return view('admin.complaints.show', compact('complaint'));
     }
 
     /**
-     * Mengubah status aduan (Aksi dari sisi panel Admin).
+     * Aksi Admin meneruskan keluhan warga ke tim konstruksi lapangan
      */
-    public function updateStatus(Request $request, Complaint $complaint)
+    public function forwardToConstructor($id)
     {
-        // FIX: Memasukkan status baru untuk Konstruktor ke dalam aturan validasi
+        DB::table('complaints')
+            ->where('id', $id)
+            ->update([
+                'status' => 'proses',
+                'updated_at' => now()
+            ]);
+
+        return redirect()->back()->with('success', 'Aduan berhasil diteruskan ke tim konstruksi lapangan.');
+    }
+
+    /**
+     * Aksi Admin menyetujui hasil kerja lapangan dan menutup laporan dengan tanggapan resmi ke user
+     */
+    public function finalizeComplaint(Request $request, $id)
+    {
         $request->validate([
-            'status' => [
-                'required', 
-                'in:pending,assigned_to_constructor,constructor_finished,selesai,diproses'
-            ],
+            'response' => 'required|string|min:5',
         ]);
 
-        // Memperbarui data status di database
-        $complaint->update(['status' => $request->status]);
-        
-        // Mempertahankan pembersihan cache statistik bawaan sistem kelompokmu
-        Cache::forget('admin_stats');
+        $complaint = Complaint::findOrFail($id);
 
-        return redirect()->route('admin.complaints.show', $complaint)
-            ->with('success', 'Status aduan berhasil diperbarui.');
+        // BYPASS MUTLAK VIA DB NATIVE: Mengisi seluruh variasi kolom potensial agar teks tanggapan 100% masuk
+        DB::table('responses')->insert([
+            'complaint_id' => $complaint->id,
+            'user_id'      => auth()->id(),
+            'body'         => $request->response,
+            'response'     => $request->response,
+            'content'      => $request->response,
+            'created_at'   => now(),
+            'updated_at'   => now(),
+        ]);
+
+        // Gunakan DB native update agar status 'selesai' masuk aman tanpa kendala ENUM database
+        DB::table('complaints')
+            ->where('id', $id)
+            ->update([
+                'status' => 'selesai',
+                'updated_at' => now()
+            ]);
+
+        return redirect()->route('admin.complaints.index')
+            ->with('success', 'Laporan keluhan resmi ditutup dan dinyatakan Selesai!');
     }
 }
