@@ -43,7 +43,7 @@ Route::middleware('auth')->group(function () {
     // ==========================================
     // AREA ROLE: ADMIN / PETUGAS PUSAT
     // ==========================================
-    Route::prefix('admin')->name('admin.')->group(function () {
+    Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
         
         Route::post('complaints/{id}/forward', [AdminComplaintController::class, 'forwardToConstructor'])->name('complaints.forward');
@@ -57,7 +57,7 @@ Route::middleware('auth')->group(function () {
     // ==========================================
     // AREA ROLE: KONSTRUKTOR (ALUR KERJA LAPANGAN)
     // ==========================================
-    Route::prefix('constructor')->name('constructor.')->group(function () {
+    Route::prefix('constructor')->name('constructor.')->middleware('role:constructor')->group(function () {
         Route::get('/dashboard', [ConstructorDashboardController::class, 'index'])->name('dashboard');
         Route::post('/complaints/{id}/complete', [ConstructorDashboardController::class, 'updateStatus'])->name('complaints.complete');
         Route::post('/complaints/{id}/update', [ConstructorDashboardController::class, 'updateStatus'])->name('complaints.update');

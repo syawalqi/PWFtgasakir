@@ -42,12 +42,12 @@ class Complaint extends Model
     public function getStatusBadgeAttribute(): string
     {
         return match($this->status) {
-            'pending'                  => 'bg-yellow-100 text-yellow-800',
-            'assigned_to_constructor'  => 'bg-amber-100 text-amber-800 border border-amber-200 animate-pulse', // Emas/Oranye (Sedang Diperbaiki Konstruktor)
-            'constructor_finished'     => 'bg-blue-100 text-blue-800 font-bold', // Biru (Konstruktor Selesai, Butuh Validasi)
-            'selesai'                  => 'bg-green-100 text-green-800', // Hijau (Selesai Total oleh Admin)
-            'diproses'                 => 'bg-blue-100 text-blue-800', // (Opsi cadangan alur lama)
-            default                    => 'bg-gray-100 text-gray-800',
+            'pending'  => 'bg-yellow-100 text-yellow-800',
+            'proses'   => 'bg-amber-100 text-amber-800 border border-amber-200 animate-pulse',
+            'review'   => 'bg-blue-100 text-blue-800 font-bold',
+            'selesai'  => 'bg-green-100 text-green-800',
+            'ditolak'  => 'bg-red-100 text-red-800',
+            default    => 'bg-gray-100 text-gray-800',
         };
     }
 } 

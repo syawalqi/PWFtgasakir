@@ -252,7 +252,7 @@ class ComplaintController extends Controller
         tags: ['Admin'],
         security: [['bearerAuth' => []]],
         parameters: [
-            new OA\Parameter(name: 'status', in: 'query', schema: new OA\Schema(type: 'string', enum: ['pending', 'diproses', 'selesai'])),
+            new OA\Parameter(name: 'status', in: 'query', schema: new OA\Schema(type: 'string', enum: ['pending', 'proses', 'review', 'selesai', 'ditolak'])),
             new OA\Parameter(name: 'search', in: 'query', schema: new OA\Schema(type: 'string')),
             new OA\Parameter(name: 'category_id', in: 'query', schema: new OA\Schema(type: 'integer')),
             new OA\Parameter(name: 'per_page', in: 'query', schema: new OA\Schema(type: 'integer'), example: 10),
@@ -302,7 +302,7 @@ class ComplaintController extends Controller
             content: new OA\JsonContent(
                 required: ['status'],
                 properties: [
-                    new OA\Property(property: 'status', type: 'string', enum: ['pending', 'diproses', 'selesai'], example: 'diproses'),
+                    new OA\Property(property: 'status', type: 'string', enum: ['pending', 'proses', 'review', 'selesai', 'ditolak'], example: 'proses'),
                 ]
             )
         ),
@@ -323,7 +323,7 @@ class ComplaintController extends Controller
     public function updateStatus(Request $request, Complaint $complaint): JsonResponse
     {
         $request->validate([
-            'status' => ['required', 'in:pending,diproses,selesai'],
+            'status' => ['required', 'in:pending,proses,review,selesai,ditolak'],
         ]);
 
         $complaint->update(['status' => $request->status]);

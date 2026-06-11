@@ -9,27 +9,29 @@ use Illuminate\Support\Facades\DB;
 
 class ComplaintController extends Controller
 {
-    /**
-     * Menampilkan daftar semua aduan dengan pagination resmi
-     */
-    public function index()
+    public function index(Request $request)
     {
-        $complaints = Complaint::with(['user', 'category'])->latest()->paginate(10);
+        $query = Complaint::with(['user', 'category']);
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('search')) {
+            $query->where('title', 'like', '%' . $request->search . '%');
+        }
+
+        $complaints = $query->latest()->paginate(10);
+
         return view('admin.complaints.index', compact('complaints'));
     }
 
-    /**
-     * Menampilkan detail aduan warga
-     */
     public function show($id)
     {
         $complaint = Complaint::with(['user', 'category', 'responses'])->findOrFail($id);
         return view('admin.complaints.show', compact('complaint'));
     }
 
-    /**
-     * Aksi Admin meneruskan keluhan warga ke tim konstruksi lapangan
-     */
     public function forwardToConstructor($id)
     {
         DB::table('complaints')
@@ -42,9 +44,6 @@ class ComplaintController extends Controller
         return redirect()->back()->with('success', 'Aduan berhasil diteruskan ke tim konstruksi lapangan.');
     }
 
-    /**
-     * Aksi Admin menyetujui hasil kerja lapangan dan menutup laporan dengan tanggapan resmi ke user
-     */
     public function finalizeComplaint(Request $request, $id)
     {
         $request->validate([
@@ -53,18 +52,14 @@ class ComplaintController extends Controller
 
         $complaint = Complaint::findOrFail($id);
 
-        // BYPASS MUTLAK VIA DB NATIVE: Mengisi seluruh variasi kolom potensial agar teks tanggapan 100% masuk
         DB::table('responses')->insert([
             'complaint_id' => $complaint->id,
             'user_id'      => auth()->id(),
-            'body'         => $request->response,
-            'response'     => $request->response,
-            'content'      => $request->response,
+            'message'      => $request->response,
             'created_at'   => now(),
             'updated_at'   => now(),
         ]);
 
-        // Gunakan DB native update agar status 'selesai' masuk aman tanpa kendala ENUM database
         DB::table('complaints')
             ->where('id', $id)
             ->update([

@@ -79,12 +79,25 @@
                                     </span>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold
-                                        {{ $aduan->status === 'pending' ? 'bg-amber-50 text-amber-700' : '' }}
-                                        {{ $aduan->status === 'process' ? 'bg-indigo-50 text-indigo-700' : '' }}
-                                        {{ $aduan->status === 'success' ? 'bg-emerald-50 text-emerald-700' : '' }}
-                                    ">
-                                        {{ ucfirst($aduan->status) }}
+                                    @php
+                                        $badgeClasses = match($aduan->status) {
+                                            'pending' => 'bg-amber-50 text-amber-700',
+                                            'proses' => 'bg-indigo-50 text-indigo-700',
+                                            'review' => 'bg-blue-50 text-blue-700',
+                                            'selesai' => 'bg-emerald-50 text-emerald-700',
+                                            'ditolak' => 'bg-red-50 text-red-700',
+                                            default => 'bg-gray-50 text-gray-700',
+                                        };
+                                        $statusLabels = [
+                                            'pending' => 'Pending',
+                                            'proses' => 'Diproses',
+                                            'review' => 'Review Konstruktor',
+                                            'selesai' => 'Selesai',
+                                            'ditolak' => 'Ditolak',
+                                        ];
+                                    @endphp
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold {{ $badgeClasses }}">
+                                        {{ $statusLabels[$aduan->status] ?? ucfirst($aduan->status) }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 text-xs text-slate-400 font-medium">
