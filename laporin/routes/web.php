@@ -61,7 +61,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/dashboard', [ConstructorDashboardController::class, 'index'])->name('dashboard');
         Route::post('/complaints/{id}/complete', [ConstructorDashboardController::class, 'updateStatus'])->name('complaints.complete');
         Route::post('/complaints/{id}/update', [ConstructorDashboardController::class, 'updateStatus'])->name('complaints.update');
-        Route::post('/complaints/{id}/comment', [ConstructorDashboardController::class, 'addComment'])->name('complaints.comment');
     });
     
 });

@@ -34,7 +34,6 @@
                                 <th class="px-6 py-3">Pelapor</th>
                                 <th class="px-6 py-3">Status Pekerjaan</th>
                                 <th class="px-6 py-3 text-center">Aksi Lapangan</th>
-                                <th class="px-6 py-3 text-center">Komentar</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -70,7 +69,7 @@
                                                 <button type="submit"
                                                     onclick="return confirm('Apakah pekerjaan perbaikan ini benar-benar sudah selesai?')"
                                                     class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg shadow transition">
-                                                    ✓ Tandai Selesai
+                                                    ✓ Tandai Selesai & Kirim ke Admin
                                                 </button>
                                             </form>
                                         @elseif($tugas->status === 'review')
@@ -83,73 +82,10 @@
                                             </span>
                                         @endif
                                     </td>
-
-                                    {{-- KOMENTAR --}}
-                                    <td class="px-6 py-4 text-center">
-                                        <div x-data="{ open: false }">
-                                            <button @click="open = !open"
-                                                class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold rounded-lg transition">
-                                                💬 {{ $tugas->responses->count() > 0 ? $tugas->responses->count() : 'Komentar' }}
-                                            </button>
-
-                                            <div x-show="open" @click.away="open = false"
-                                                class="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
-                                                x-cloak>
-                                                <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-lg mx-4 max-h-[80vh] overflow-y-auto"
-                                                    @click.stop>
-                                                    <div class="flex items-center justify-between mb-4">
-                                                        <h4 class="font-bold text-slate-900">Komentar & Progress</h4>
-                                                        <button @click="open = false" class="text-slate-400 hover:text-slate-600 text-xl leading-none">&times;</button>
-                                                    </div>
-
-                                                    <p class="text-sm font-semibold text-slate-700 mb-3">{{ $tugas->title }}</p>
-
-                                                    {{-- Existing responses --}}
-                                                    @if($tugas->responses->count() > 0)
-                                                        <div class="space-y-3 mb-4 max-h-48 overflow-y-auto">
-                                                            @foreach($tugas->responses as $response)
-                                                                <div class="p-3 rounded-xl {{ $response->user_id === auth()->id() ? 'bg-blue-50 ml-4' : 'bg-slate-50 mr-4' }}">
-                                                                    <div class="flex items-center justify-between mb-1">
-                                                                        <span class="text-xs font-bold text-slate-500">{{ $response->user->name ?? 'User' }}</span>
-                                                                        <span class="text-[10px] text-slate-400">{{ $response->created_at->diffForHumans() }}</span>
-                                                                    </div>
-                                                                    <p class="text-sm text-slate-700">{{ $response->message }}</p>
-                                                                </div>
-                                                            @endforeach
-                                                        </div>
-                                                    @else
-                                                        <p class="text-xs text-slate-400 italic mb-4">Belum ada komentar.</p>
-                                                    @endif
-
-                                                    {{-- Comment form --}}
-                                                    @if($tugas->status === 'proses')
-                                                        <form method="POST" action="{{ route('constructor.complaints.comment', $tugas->id) }}" class="border-t border-slate-100 pt-4">
-                                                            @csrf
-                                                            <textarea name="message" rows="2" required
-                                                                class="w-full rounded-xl border-slate-200 px-4 py-3 text-sm focus:border-slate-900 focus:ring focus:ring-slate-900/5"
-                                                                placeholder="Tulis progres atau kendala di lapangan..."></textarea>
-                                                            <button type="submit"
-                                                                class="mt-2 w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl transition">
-                                                                Kirim Komentar
-                                                            </button>
-                                                        </form>
-                                                    @else
-                                                        <p class="text-xs text-slate-400 italic text-center border-t border-slate-100 pt-4">
-                                                            @if($tugas->status === 'review')
-                                                                Menunggu konfirmasi admin
-                                                            @else
-                                                                Laporan telah selesai
-                                                            @endif
-                                                        </p>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="px-6 py-8 text-center text-slate-400 italic">
+                                    <td colspan="6" class="px-6 py-8 text-center text-slate-400 italic">
                                         Belum ada tugas perbaikan lapangan yang dialokasikan.
                                     </td>
                                 </tr>
