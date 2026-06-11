@@ -11,8 +11,10 @@
                 <select name="status" class="block w-full rounded-xl border-slate-200 px-4 py-2.5 text-sm text-slate-700 shadow-sm transition-all duration-150 focus:border-slate-900 focus:ring focus:ring-slate-900/5">
                     <option value="">Semua Status</option>
                     <option value="pending" {{ request('status')=='pending'?'selected':'' }}>⏳ Pending</option>
-                    <option value="diproses" {{ request('status')=='diproses'?'selected':'' }}>🔧 Diproses</option>
+                    <option value="proses" {{ request('status')=='proses'?'selected':'' }}>🔧 Diproses</option>
+                    <option value="review" {{ request('status')=='review'?'selected':'' }}>📋 Review</option>
                     <option value="selesai" {{ request('status')=='selesai'?'selected':'' }}>✅ Selesai</option>
+                    <option value="ditolak" {{ request('status')=='ditolak'?'selected':'' }}>❌ Ditolak</option>
                 </select>
             </div>
 
@@ -66,8 +68,17 @@
                             </td>
                             
                             <td class="p-4 text-center">
+                                @php
+                                    $statusLabels = [
+                                        'pending' => 'Pending',
+                                        'proses' => 'Diproses',
+                                        'review' => 'Review Konstruktor',
+                                        'selesai' => 'Selesai',
+                                        'ditolak' => 'Ditolak',
+                                    ];
+                                @endphp
                                 <span class="px-3 py-1 rounded-full text-xs font-bold tracking-wide {{ $c->status_badge }}">
-                                    {{ ucfirst($c->status) }}
+                                    {{ $statusLabels[$c->status] ?? ucfirst($c->status) }}
                                 </span>
                             </td>
                             

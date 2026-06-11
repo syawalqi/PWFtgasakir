@@ -794,8 +794,10 @@
                             "type": "string",
                             "enum": [
                                 "pending",
-                                "diproses",
-                                "selesai"
+                                "proses",
+                                "review",
+                                "selesai",
+                                "ditolak"
                             ]
                         }
                     },
@@ -879,11 +881,13 @@
                                 "properties": {
                                     "status": {
                                         "type": "string",
-                                        "example": "diproses",
+                                        "example": "proses",
                                         "enum": [
                                             "pending",
-                                            "diproses",
-                                            "selesai"
+                                            "proses",
+                                            "review",
+                                            "selesai",
+                                            "ditolak"
                                         ]
                                     }
                                 },
